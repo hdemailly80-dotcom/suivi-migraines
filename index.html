@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Journal de migraines</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--ink:#1d2733;--mute:#5b6978;--line:#d8dfe5;--acc:#2a6b73;--acc-ink:#fff;--soft:#e4eff0;--moon-dark:#2b3544;--moon-lit:#f1e9c9;--danger:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#141a22;--card:#1d2631;--ink:#e6ebf0;--mute:#9aa7b5;--line:#2e3a49;--acc:#6fbac2;--acc-ink:#0e1a1c;--soft:#22343a;--moon-dark:#3a4658;--danger:#ff8a80}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+h1,h2{font-family:"Iowan Old Style",Georgia,serif;font-weight:600;margin:0}
+header{display:flex;align-items:center;gap:14px;padding:18px 16px 10px;max-width:640px;margin:0 auto}
+header svg{flex:none}
+header h1{font-size:1.4rem;line-height:1.2}
+header p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
+.who{display:flex;gap:8px;max-width:640px;margin:0 auto;padding:4px 16px 4px}
+.who button{flex:1;padding:9px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.who button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+nav{display:flex;gap:6px;max-width:640px;margin:0 auto;padding:6px 16px 0;position:sticky;top:0;background:var(--bg);z-index:5}
+nav button{flex:1;padding:10px 6px;border:0;border-bottom:3px solid transparent;background:none;color:var(--mute);font:inherit;font-weight:600;cursor:pointer}
+nav button[aria-selected=true]{color:var(--acc);border-color:var(--acc)}
+main{max-width:640px;margin:0 auto;padding:12px 16px 60px}
+section[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h2{font-size:1.05rem;margin-bottom:8px}
+label.f{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px}
+input[type=text],input[type=number],input[type=datetime-local],select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:84px;resize:vertical}
+button.b{padding:11px 14px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);font:inherit;font-weight:600;cursor:pointer}
+button.b.o{background:none;color:var(--acc)}
+button.b.d{border-color:var(--danger);color:var(--danger);background:none}
+button.b.s{padding:7px 10px;font-size:.88rem}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,label.chip:has(input:focus-visible){outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1}
+.grid10{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.grid10 button{padding:14px 0;font-size:1.15rem;font-weight:700;border:2px solid transparent;border-radius:10px;cursor:pointer;color:#1d2733}
+.grid10 button[aria-pressed=true]{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{padding:9px 2px;font:inherit;font-size:.82rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+.scale button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+label.chip{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);cursor:pointer}
+label.chip input{accent-color:var(--acc);width:18px;height:18px;margin:0}
+label.chip:has(input:checked){background:var(--soft);border-color:var(--acc)}
+.alc{display:grid;grid-template-columns:1fr 90px 40px;gap:8px;margin-bottom:8px}
+.muted{color:var(--mute);font-size:.88rem}
+.note{padding:10px;border-radius:8px;background:var(--soft);margin-top:10px;font-size:.92rem}
+.press{font-family:"Iowan Old Style",Georgia,serif;font-size:1.5rem}
+.entry{border-left:6px solid var(--line)}
+.entry .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.entry .badge{min-width:40px;text-align:center;padding:4px 8px;border-radius:8px;font-weight:700;color:#1d2733}
+.entry dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0;font-size:.92rem}
+.entry dt{color:var(--mute)}
+.entry dd{margin:0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stats div{background:var(--bg);border-radius:8px;padding:10px}
+.stats b{display:block;font-family:"Iowan Old Style",Georgia,serif;font-size:1.4rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.92rem;max-width:90vw;z-index:20}
+.toast[hidden]{display:none}
+#report{display:none}
+@media print{
+  body>*:not(#report){display:none!important}
+  #report{display:block;color:#000;background:#fff;padding:0;font:11pt/1.35 system-ui,sans-serif}
+  #report h1{font-size:18pt;margin-bottom:4pt}
+  #report table{width:100%;border-collapse:collapse;margin-top:10pt;font-size:9pt}
+  #report th,#report td{border:1px solid #999;padding:3pt 4pt;text-align:left;vertical-align:top}
+  #report th{background:#e8e8e8}
+  #report tr{page-break-inside:avoid}
+  @page{size:A4 landscape;margin:12mm}
+}
+</style>
+</head>
+<body>
+<header>
+  <svg id="moonSvg" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"></svg>
+  <div>
+    <h1>Journal de migraines</h1>
+    <p id="moonTxt"></p>
+  </div>
+</header>
+<div class="who" id="who" role="group" aria-label="Personne"></div>
+<nav role="tablist">
+  <button role="tab" data-tab="new" aria-selected="true">Nouvelle entrée</button>
+  <button role="tab" data-tab="log" aria-selected="false">Journal</button>
+  <button role="tab" data-tab="exp" aria-selected="false">Export</button>
+</nav>
+<main>
+
+<section id="tab-new">
+  <div id="editBanner" class="note" hidden></div>
+
+  <div class="card">
+    <label class="f" for="dt">Début</label>
+    <input type="datetime-local" id="dt">
+    <label class="f" for="dtEnd" style="margin-top:12px">Fin (facultatif)</label>
+    <input type="datetime-local" id="dtEnd">
+    <p class="muted" id="durTxt" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="card" id="loc"></div>
+
+  <div class="card">
+    <h2>Intensité</h2>
+    <div class="grid10" id="intensity" role="group" aria-label="Intensité de 1 à 10"></div>
+    <p class="muted" style="margin:8px 0 0">1 = gêne légère, 10 = douleur insupportable</p>
+  </div>
+
+  <div class="card">
+    <h2>Traitements pris</h2>
+    <div class="chips" id="treat"></div>
+    <label class="f" for="treatOther" style="margin-top:12px">Autre traitement (facultatif)</label>
+    <input type="text" id="treatOther" placeholder="Nom et dose">
+  </div>
+
+  <div class="card">
+    <h2>Alcool consommé (dans les 24 h)</h2>
+    <div id="alc"></div>
+    <button class="b o s" id="alcAdd" type="button">Ajouter une boisson</button>
+  </div>
+
+  <div class="card">
+    <h2>Fatigue</h2>
+    <div class="scale" id="fat"></div>
+    <h2 style="margin-top:14px">Stress</h2>
+    <div class="scale" id="str"></div>
+  </div>
+
+  <div class="card">
+    <h2>Localisation de la douleur</h2>
+    <div class="chips" id="pain"></div>
+    <h2 style="margin-top:14px">Symptômes associés</h2>
+    <div class="chips" id="sym"></div>
+    <label class="f" for="notes" style="margin-top:12px">Autre (déclencheur suspecté, sommeil, repas, règles, contexte…)</label>
+    <textarea id="notes"></textarea>
+  </div>
+
+  <div class="row">
+    <button class="b" id="save" type="button">Enregistrer l’entrée</button>
+    <button class="b o" id="cancel" type="button" hidden>Annuler la modification</button>
+  </div>
+</section>
+
+<section id="tab-log" hidden>
+  <div class="card"><div class="stats" id="stats"></div></div>
+  <div id="list"></div>
+</section>
+
+<section id="tab-exp" hidden>
+  <div class="card">
+    <h2>Pour ton ordinateur ou ton médecin</h2>
+    <p class="muted">Le fichier tableur s’ouvre dans Excel ou LibreOffice, et s’importe dans Google Sheets (Fichier, Importer). Le rapport PDF est prêt à imprimer.</p>
+    <div class="row">
+      <button class="b" id="expCsv" type="button">Télécharger le tableur (CSV)</button>
+      <button class="b" id="expPdf" type="button">Créer le rapport PDF</button>
+    </div>
+    <p class="muted" style="margin-top:8px">Rapport PDF : dans la fenêtre d’impression, choisis « Enregistrer au format PDF ».</p>
+  </div>
+  <div class="card">
+    <h2>Sauvegarde complète</h2>
+    <p class="muted">Les données restent dans ce navigateur. Fais une sauvegarde de temps en temps, surtout avant de vider l’historique ou de changer d’appareil.</p>
+    <div class="row">
+      <button class="b o" id="expJson" type="button">Sauvegarder (JSON)</button>
+      <button class="b o" id="impBtn" type="button">Restaurer une sauvegarde</button>
+    </div>
+    <input type="file" id="impFile" accept=".json,application/json" hidden>
+  </div>
+</section>
+
+</main>
+
+<div id="report"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* ---------- Constantes ---------- */
+const KEY = "migraines.v1";
+const HOME = { label: "Maison (Saint-Riquier)", lat: 50.133, lon: 1.95 };
+const TREATS = ["Doliprane", "Triptan", "Profemigr"];
+const PAIN = ["Arrière du crâne", "Avant du crâne", "Tempe droite", "Tempe gauche", "Derrière les yeux"];
+const SYMS = ["Aura", "Nausées", "Vomissements", "Sensation de cerveau qui se déplace", "Sensibilité à la lumière", "Sensibilité au bruit"];
+const ALC_TYPES = ["Bière", "Vin", "Spiritueux", "Cocktail", "Autre"];
+const LEVELS = ["Nul", "Léger", "Moyen", "Fort", "Extrême"];
+
+/* ---------- Utilitaires ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function toLocalInput(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function fmtDate(s) {
+  const d = new Date(s);
+  return d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) + " à " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+}
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200);
+}
+function intensityColor(i) { return `hsl(${50 - (i - 1) * 5.5} 78% ${64 - (i - 1) * 2.2}%)`; }
+function sign(n) { return (n > 0 ? "+" : n < 0 ? "−" : "") + Math.abs(n).toString().replace(".", ","); }
+
+/* ---------- Stockage ---------- */
+function load() { try { const v = JSON.parse(localStorage.getItem(KEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+let entries = load();
+entries.forEach(e => { if (!e.who) e.who = "Hervé"; });
+const PEOPLE = ["Hervé", "Cindy"];
+let who = (() => { try { const w = localStorage.getItem("migraines.who"); return PEOPLE.includes(w) ? w : PEOPLE[0]; } catch (e) { return PEOPLE[0]; } })();
+function saveWho() { try { localStorage.setItem("migraines.who", who); } catch (e) {} }
+function paintWho() {
+  $("#who").innerHTML = PEOPLE.map(p => `<button type="button" data-p="${p}" aria-pressed="${p === who}">${p}</button>`).join("");
+  $("#save").textContent = `Enregistrer l’entrée de ${who}`;
+  $("#expPdf").textContent = `Créer le rapport PDF de ${who}`;
+  renderList();
+}
+$("#who").addEventListener("click", e => {
+  const p = e.target.dataset.p; if (!p || p === who) return;
+  if (editingId != null) { toast("Termine ou annule la modification avant de changer de personne."); return; }
+  who = p; saveWho(); paintWho(); toast("Journal de " + p);
+});
+function durHours(a, b) { if (!a || !b) return null; const ms = new Date(b) - new Date(a); return ms >= 0 ? Math.round(ms / 360000) / 10 : null; }
+function updateDur() {
+  const h = durHours(draft.dt, draft.end);
+  $("#durTxt").textContent = draft.end ? (h == null ? "La fin doit être après le début." : `Durée : ${String(h).replace(".", ",")} h`) : "";
+}
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify(entries)); return true; }
+  catch (e) { toast("Enregistrement impossible : stockage plein ou bloqué. Fais une sauvegarde JSON."); return false; }
+}
+
+/* ---------- Lune ---------- */
+const SYN = 29.530588853, REF = Date.UTC(2000, 0, 6, 18, 14);
+function moonInfo(date) {
+  const age = (((date.getTime() - REF) / 86400000) % SYN + SYN) % SYN;
+  const illum = (1 - Math.cos(2 * Math.PI * age / SYN)) / 2;
+  const names = [[1.85, "Nouvelle lune"], [5.54, "Premier croissant"], [9.23, "Premier quartier"], [12.92, "Gibbeuse croissante"],
+    [16.61, "Pleine lune"], [20.3, "Gibbeuse décroissante"], [23.99, "Dernier quartier"], [27.68, "Dernier croissant"], [99, "Nouvelle lune"]];
+  const name = names.find(n => age < n[0])[1];
+  return { age: Math.round(age * 10) / 10, illum: Math.round(illum * 100), name, f: age / SYN };
+}
+function moonSvg(f) {
+  const r = 24, c = 28, k = Math.cos(2 * Math.PI * f), rx = Math.abs(k) * r;
+  const sweep = k > 0 ? 0 : 1;
+  const lit = `M ${c} ${c - r} A ${r} ${r} 0 0 1 ${c} ${c + r} A ${rx.toFixed(2)} ${r} 0 0 ${sweep} ${c} ${c - r} Z`;
+  const flip = f >= 0.5 ? ` transform="translate(${2 * c} 0) scale(-1 1)"` : "";
+  return `<circle cx="${c}" cy="${c}" r="${r}" fill="var(--moon-dark)"/><path d="${lit}" fill="var(--moon-lit)"${flip}/>`;
+}
+(function headerMoon() {
+  const m = moonInfo(new Date());
+  $("#moonSvg").innerHTML = moonSvg(m.f);
+  $("#moonTxt").textContent = `Lune du jour : ${m.name}, ${m.illum} % éclairée`;
+})();
+
+/* ---------- Brouillon ---------- */
+let draft, editingId = null, locStep = "ask", pMsg = "", pFail = false;
+function newDraft() {
+  return { dt: toLocalInput(new Date()), intensity: null, end: "", treat: [], treatOther: "", alc: [], fat: null, str: null, sym: [], notes: "", place: null, pressure: null };
+}
+
+/* ---------- Lieu et pression ---------- */
+function renderLoc() {
+  const box = $("#loc");
+  let h = "<h2>Lieu et pression</h2>";
+  if (locStep === "ask") {
+    h += `<p style="margin:0 0 10px">Es-tu à la maison ?</p>
+      <div class="row"><button class="b" data-act="home" type="button">Oui, à la maison</button><button class="b o" data-act="away" type="button">Non</button></div>`;
+  } else if (locStep === "where") {
+    h += `<p style="margin:0 0 10px">Où es-tu ?</p>
+      <button class="b" data-act="gps" type="button" style="width:100%;margin-bottom:10px">Utiliser ma position actuelle</button>
+      <div class="row"><input type="text" id="city" placeholder="Ou tape une ville" aria-label="Ville"><button class="b o" data-act="search" type="button" style="flex:none">Chercher</button></div>
+      <div id="cityRes" style="margin-top:8px"></div>
+      <button class="b o s" data-act="back" type="button" style="margin-top:10px">Retour</button>`;
+  } else {
+    const p = draft.pressure;
+    h += `<p style="margin:0 0 6px">${esc(draft.place.label)} <button class="b o s" data-act="change" type="button">Changer</button></p>`;
+    if (p) {
+      h += `<div class="press">${String(p.hpa).replace(".", ",")} hPa</div>`;
+      if (p.delta3 != null) h += `<div class="muted">${sign(p.delta3)} hPa sur les 3 h précédentes</div>`;
+      if (p.manual) h += `<div class="muted">Saisie manuelle</div>`;
+    }
+    if (pMsg) h += `<div class="note">${esc(pMsg)}${pFail ? `<br><button class="b o s" data-act="retry" type="button" style="margin-top:8px">Réessayer</button>` : ""}</div>`;
+    h += `<label class="f" for="pManual" style="margin-top:10px">Saisir la pression à la main (hPa)</label>
+      <div class="row"><input type="number" id="pManual" step="0.1" inputmode="decimal" placeholder="ex. 1013"><button class="b o" data-act="manual" type="button" style="flex:none">Valider</button></div>`;
+  }
+  box.innerHTML = h;
+}
+$("#loc").addEventListener("click", async e => {
+  const act = e.target.dataset.act; if (!act) return;
+  if (act === "home") setPlace(HOME);
+  else if (act === "away" || act === "change") { locStep = "where"; draft.pressure = null; draft.place = null; pMsg = ""; renderLoc(); }
+  else if (act === "back") { locStep = "ask"; renderLoc(); }
+  else if (act === "gps") {
+    if (!navigator.geolocation) { $("#cityRes").textContent = "Position indisponible sur cet appareil."; return; }
+    $("#cityRes").textContent = "Recherche de la position…";
+    navigator.geolocation.getCurrentPosition(
+      pos => setPlace({ label: "Position actuelle", lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      () => { $("#cityRes").textContent = "Position refusée ou introuvable. Tape plutôt une ville."; },
+      { timeout: 10000, maximumAge: 600000 });
+  }
+  else if (act === "search") searchCity();
+  else if (act === "retry") refreshPressure();
+  else if (act === "pick") setPlace({ label: e.target.dataset.label, lat: +e.target.dataset.lat, lon: +e.target.dataset.lon });
+  else if (act === "manual") {
+    const v = parseFloat($("#pManual").value.replace(",", "."));
+    if (!(v > 850 && v < 1100)) { toast("Pression attendue entre 850 et 1100 hPa."); return; }
+    draft.pressure = { hpa: v, delta3: null, manual: true }; pMsg = ""; renderLoc();
+  }
+});
+async function searchCity() {
+  const q = $("#city").value.trim(), out = $("#cityRes");
+  if (q.length < 2) { out.textContent = "Tape au moins 2 lettres."; return; }
+  out.textContent = "Recherche…";
+  try {
+    const r = await fetchTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=fr`);
+    const j = await r.json();
+    if (!j.results || !j.results.length) { out.textContent = "Aucune ville trouvée."; return; }
+    out.innerHTML = j.results.map(c => {
+      const label = [c.name, c.admin1, c.country].filter(Boolean).join(", ");
+      return `<button class="b o s" style="display:block;width:100%;text-align:left;margin-bottom:6px" data-act="pick" data-lat="${c.latitude}" data-lon="${c.longitude}" data-label="${esc(label)}" type="button">${esc(label)}</button>`;
+    }).join("");
+  } catch (e) { out.textContent = "Recherche impossible (hors connexion ?). Utilise ta position ou saisis la pression à la main."; }
+}
+function fetchTimeout(url, ms = 10000) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { signal: ctl.signal }).then(r => { clearTimeout(t); if (!r.ok) throw new Error("http"); return r; });
+}
+function setPlace(p) { draft.place = p; locStep = "done"; refreshPressure(); }
+async function refreshPressure() {
+  if (!draft.place) return;
+  pFail = false; pMsg = "Mesure de la pression en cours…"; renderLoc();
+  try {
+    const { lat, lon } = draft.place;
+    const r = await fetchTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=pressure_msl&past_days=7&forecast_days=2&timezone=auto`);
+    const j = await r.json(), t = j.hourly.time, p = j.hourly.pressure_msl;
+    const i = t.indexOf(draft.dt.slice(0, 13) + ":00");
+    if (i < 0 || p[i] == null) throw new Error("hors plage");
+    const d = i >= 3 && p[i - 3] != null ? Math.round((p[i] - p[i - 3]) * 10) / 10 : null;
+    draft.pressure = { hpa: Math.round(p[i] * 10) / 10, delta3: d, manual: false };
+    pMsg = "";
+  } catch (e) {
+    pFail = true;
+    const nm = e && e.name, msg = e && e.message;
+    let why, tip = "";
+    if (nm === "AbortError") why = "délai dépassé";
+    else if (msg === "http") why = "service momentanément indisponible";
+    else if (msg === "hors plage") why = "date hors des 7 derniers jours, ou future de plus d’un jour";
+    else {
+      why = "connexion absente ou bloquée";
+      tip = " Si le fichier est ouvert dans l’application Claude ou dans un aperçu, les connexions externes sont bloquées : enregistre le fichier sur le téléphone puis ouvre-le avec Chrome.";
+    }
+    pMsg = `Pression non récupérée (${why}).${tip} Tu peux aussi la saisir à la main ci-dessous. Détail technique : ${nm || "erreur"}${msg ? " – " + msg : ""}.`;
+  }
+  renderLoc();
+}
+
+/* ---------- Formulaire ---------- */
+function buildStatic() {
+  const g = $("#intensity");
+  for (let i = 1; i <= 10; i++) {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = i; b.style.background = intensityColor(i);
+    b.addEventListener("click", () => { draft.intensity = i; paintForm(); });
+    g.appendChild(b);
+  }
+  for (const [id, key] of [["#fat", "fat"], ["#str", "str"]]) {
+    const s = $(id);
+    LEVELS.forEach((lab, v) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = lab;
+      b.addEventListener("click", () => { draft[key] = v; paintForm(); });
+      s.appendChild(b);
+    });
+  }
+  $("#treat").innerHTML = TREATS.map(t => `<label class="chip"><input type="checkbox" value="${t}"> ${t}</label>`).join("");
+  $("#sym").innerHTML = SYMS.map(t => `<label class="chip"><input type="checkbox" value="${t}"> ${t}</label>`).join("");
+  $("#treat").addEventListener("change", () => draft.treat = [...document.querySelectorAll("#treat input:checked")].map(i => i.value));
+  $("#pain").innerHTML = PAIN.map(t => `<label class="chip"><input type="checkbox" value="${t}"> ${t}</label>`).join("");
+  const readSym = () => draft.sym = [...document.querySelectorAll("#pain input:checked, #sym input:checked")].map(i => i.value);
+  $("#sym").addEventListener("change", readSym);
+  $("#pain").addEventListener("change", readSym);
+  $("#dt").addEventListener("change", e => { if (e.target.value) { draft.dt = e.target.value; updateDur(); if (draft.place && !(draft.pressure && draft.pressure.manual)) refreshPressure(); } });
+  $("#dtEnd").addEventListener("change", e => { draft.end = e.target.value; updateDur(); });
+  $("#treatOther").addEventListener("input", e => draft.treatOther = e.target.value);
+  $("#notes").addEventListener("input", e => draft.notes = e.target.value);
+  $("#alcAdd").addEventListener("click", () => { draft.alc.push({ type: "Bière", qty: 1 }); paintAlc(); });
+}
+function paintAlc() {
+  const box = $("#alc");
+  if (!draft.alc.length) { box.innerHTML = `<p class="muted" style="margin:0 0 10px">Aucune boisson ajoutée.</p>`; return; }
+  box.innerHTML = draft.alc.map((a, i) => `<div class="alc">
+    <select data-i="${i}" data-k="type" aria-label="Type de boisson">${ALC_TYPES.map(t => `<option${t === a.type ? " selected" : ""}>${t}</option>`).join("")}</select>
+    <input type="number" min="0.5" step="0.5" value="${a.qty}" data-i="${i}" data-k="qty" aria-label="Nombre de verres" inputmode="decimal">
+    <button class="b d s" data-i="${i}" data-k="del" type="button" aria-label="Retirer">✕</button></div>`).join("") +
+    `<p class="muted" style="margin:0 0 10px">Quantité en verres standard.</p>`;
+}
+$("#alc").addEventListener("input", e => { const i = e.target.dataset.i; if (i == null) return; const k = e.target.dataset.k; draft.alc[i][k] = k === "qty" ? parseFloat(e.target.value) || 0 : e.target.value; });
+$("#alc").addEventListener("click", e => { if (e.target.dataset.k === "del") { draft.alc.splice(+e.target.dataset.i, 1); paintAlc(); } });
+
+function paintForm() {
+  $("#dt").value = draft.dt; $("#dtEnd").value = draft.end; updateDur(); $("#treatOther").value = draft.treatOther; $("#notes").value = draft.notes;
+  document.querySelectorAll("#intensity button").forEach((b, i) => b.setAttribute("aria-pressed", draft.intensity === i + 1));
+  for (const [id, key] of [["#fat", "fat"], ["#str", "str"]])
+    document.querySelectorAll(id + " button").forEach((b, v) => b.setAttribute("aria-pressed", draft[key] === v));
+  document.querySelectorAll("#treat input").forEach(i => i.checked = draft.treat.includes(i.value));
+  document.querySelectorAll("#sym input, #pain input").forEach(i => i.checked = draft.sym.includes(i.value));
+  paintAlc(); renderLoc();
+  $("#cancel").hidden = editingId == null;
+  const bn = $("#editBanner"); bn.hidden = editingId == null; if (editingId != null) bn.textContent = "Modification d’une entrée existante.";
+}
+function resetForm() { draft = newDraft(); editingId = null; locStep = "ask"; pMsg = ""; paintForm(); }
+
+$("#save").addEventListener("click", () => {
+  if (!draft.intensity) { toast("Choisis une intensité de 1 à 10."); return; }
+  if (draft.end && durHours(draft.dt, draft.end) == null) { toast("La fin doit être après le début."); return; }
+  const m = moonInfo(new Date(draft.dt));
+  const e = {
+    id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
+    who, dt: draft.dt, end: draft.end || null, intensity: draft.intensity, dur: durHours(draft.dt, draft.end),
+    treat: draft.treat, treatOther: draft.treatOther.trim(), alc: draft.alc.filter(a => a.qty > 0),
+    fat: draft.fat, str: draft.str, sym: draft.sym, notes: draft.notes.trim(),
+    place: draft.place, pressure: draft.pressure, moon: { name: m.name, illum: m.illum, age: m.age }
+  };
+  const idx = entries.findIndex(x => x.id === e.id);
+  if (idx >= 0) entries[idx] = e; else entries.push(e);
+  if (!persist()) return;
+  toast(idx >= 0 ? "Entrée modifiée." : "Entrée enregistrée.");
+  resetForm(); showTab("log");
+});
+$("#cancel").addEventListener("click", () => { resetForm(); showTab("log"); });
+
+/* ---------- Journal ---------- */
+const sorted = () => entries.filter(e => e.who === who).sort((a, b) => b.dt.localeCompare(a.dt));
+const alcTotal = e => (e.alc || []).reduce((s, a) => s + a.qty, 0);
+function stats(list) {
+  const n = list.length;
+  const avg = n ? (list.reduce((s, e) => s + e.intensity, 0) / n) : 0;
+  const withP = list.filter(e => e.pressure);
+  const avgP = withP.length ? withP.reduce((s, e) => s + e.pressure.hpa, 0) / withP.length : null;
+  const treated = list.filter(e => e.treat.length || e.treatOther).length;
+  return { n, avg, avgP, treated };
+}
+function renderList() {
+  const list = sorted(), s = stats(list);
+  const cut = Date.now() - 30 * 86400000, s30 = stats(list.filter(e => new Date(e.dt).getTime() >= cut));
+  $("#stats").innerHTML = `<div><b>${s30.n}</b>épisodes sur 30 jours</div><div><b>${s.n ? s.avg.toFixed(1).replace(".", ",") : "–"}</b>intensité moyenne</div>
+    <div><b>${s.treated}</b>épisodes traités</div><div><b>${s.avgP ? Math.round(s.avgP) + " hPa" : "–"}</b>pression moyenne lors des crises</div>`;
+  if (!list.length) { $("#list").innerHTML = `<div class="card">Aucune entrée pour ${esc(who)} pour l’instant. Ajoute un épisode dans l’onglet « Nouvelle entrée ».</div>`; return; }
+  $("#list").innerHTML = list.map(e => {
+    const tr = [...e.treat, e.treatOther].filter(Boolean).join(", ") || "Aucun";
+    const al = alcTotal(e) ? (e.alc.map(a => `${a.qty} ${a.type.toLowerCase()}`).join(", ")) : "Aucun";
+    const pr = e.pressure ? `${String(e.pressure.hpa).replace(".", ",")} hPa${e.pressure.delta3 != null ? " (" + sign(e.pressure.delta3) + " sur 3 h)" : ""}` : "Non renseignée";
+    return `<div class="card entry" style="border-left-color:${intensityColor(e.intensity)}">
+      <div class="top"><strong>${esc(fmtDate(e.dt))}</strong><span class="badge" style="background:${intensityColor(e.intensity)}">${e.intensity}/10</span></div>
+      <dl>
+        <dt>Traitement</dt><dd>${esc(tr)}</dd>
+        <dt>Alcool</dt><dd>${esc(al)}</dd>
+        <dt>Fatigue</dt><dd>${e.fat == null ? "–" : LEVELS[e.fat]}</dd>
+        <dt>Stress</dt><dd>${e.str == null ? "–" : LEVELS[e.str]}</dd>
+        <dt>Pression</dt><dd>${esc(pr)}</dd>
+        <dt>Lieu</dt><dd>${esc(e.place ? e.place.label : "Non renseigné")}</dd>
+        <dt>Lune</dt><dd>${esc(e.moon.name)}, ${e.moon.illum} %</dd>
+        ${e.end ? `<dt>Fin</dt><dd>${esc(fmtDate(e.end))}${e.dur != null ? " (" + String(e.dur).replace(".", ",") + " h)" : ""}</dd>` : ""}
+        ${e.sym.some(x => PAIN.includes(x)) ? `<dt>Douleur</dt><dd>${esc(e.sym.filter(x => PAIN.includes(x)).join(", "))}</dd>` : ""}
+        ${e.sym.some(x => !PAIN.includes(x)) ? `<dt>Symptômes</dt><dd>${esc(e.sym.filter(x => !PAIN.includes(x)).join(", "))}</dd>` : ""}
+        ${e.notes ? `<dt>Notes</dt><dd>${esc(e.notes)}</dd>` : ""}
+      </dl>
+      <div class="row"><button class="b o s" data-act="edit" data-id="${e.id}" type="button">Modifier</button><button class="b d s" data-act="del" data-id="${e.id}" type="button">Supprimer</button></div></div>`;
+  }).join("");
+}
+$("#list").addEventListener("click", ev => {
+  const { act, id } = ev.target.dataset; if (!act) return;
+  const e = entries.find(x => x.id === id); if (!e) return;
+  if (act === "del") {
+    if (!confirm("Supprimer cette entrée ?")) return;
+    entries = entries.filter(x => x.id !== id); persist(); renderList(); toast("Entrée supprimée.");
+  } else if (act === "edit") {
+    draft = { dt: e.dt, intensity: e.intensity, end: e.end || "", treat: [...e.treat], treatOther: e.treatOther || "", alc: e.alc.map(a => ({ ...a })), fat: e.fat, str: e.str, sym: [...e.sym], notes: e.notes || "", place: e.place, pressure: e.pressure };
+    editingId = e.id; who = e.who; saveWho(); paintWho(); locStep = e.place ? "done" : "ask"; pMsg = ""; paintForm(); showTab("new"); window.scrollTo(0, 0);
+  }
+});
+
+/* ---------- Export ---------- */
+function download(name, mime, content) {
+  const blob = new Blob([content], { type: mime }), a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+const stamp = () => new Date().toISOString().slice(0, 10);
+function csvCell(v) { v = v == null ? "" : String(v); return /[;"\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; }
+$("#expCsv").addEventListener("click", () => {
+  if (!entries.length) { toast("Aucune entrée à exporter."); return; }
+  const head = ["Personne", "Date de début", "Heure de début", "Date de fin", "Heure de fin", "Durée (h)", "Intensité (1-10)", "Doliprane", "Triptan", "Profemigr", "Autre traitement", "Alcool (verres)", "Détail alcool", "Fatigue (0-4)", "Stress (0-4)", "Localisation de la douleur", "Symptômes", "Lieu", "Pression (hPa)", "Variation 3 h (hPa)", "Phase de lune", "Lune éclairée (%)", "Notes"];
+  const rows = [...entries].sort((a, b) => a.who.localeCompare(b.who) || a.dt.localeCompare(b.dt)).map(e => [
+    e.who, e.dt.slice(0, 10), e.dt.slice(11, 16), e.end ? e.end.slice(0, 10) : "", e.end ? e.end.slice(11, 16) : "", e.dur != null ? String(e.dur).replace(".", ",") : "", e.intensity,
+    e.treat.includes("Doliprane") ? "oui" : "", e.treat.includes("Triptan") ? "oui" : "", e.treat.includes("Profemigr") ? "oui" : "", e.treatOther,
+    String(alcTotal(e)).replace(".", ","), e.alc.map(a => `${a.qty} ${a.type}`).join(" + "),
+    e.fat ?? "", e.str ?? "", e.sym.filter(x => PAIN.includes(x)).join(", "), e.sym.filter(x => !PAIN.includes(x)).join(", "), e.place ? e.place.label : "",
+    e.pressure ? String(e.pressure.hpa).replace(".", ",") : "", e.pressure && e.pressure.delta3 != null ? String(e.pressure.delta3).replace(".", ",") : "",
+    e.moon.name, e.moon.illum, e.notes
+  ]);
+  const csv = "\ufeffsep=;\r\n" + [head, ...rows].map(r => r.map(csvCell).join(";")).join("\r\n");
+  download(`migraines_${stamp()}.csv`, "text/csv;charset=utf-8", csv);
+});
+$("#expJson").addEventListener("click", () => {
+  download(`migraines_sauvegarde_${stamp()}.json`, "application/json", JSON.stringify({ app: "journal-migraines", version: 1, exported: new Date().toISOString(), entries }, null, 1));
+});
+$("#impBtn").addEventListener("click", () => $("#impFile").click());
+$("#impFile").addEventListener("change", async ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()); const arr = Array.isArray(j) ? j : j.entries;
+    if (!Array.isArray(arr) || arr.some(x => !x.id || !x.dt || !x.intensity)) throw new Error("format");
+    const map = new Map(entries.map(x => [x.id, x])); arr.forEach(x => { x.who = PEOPLE.includes(x.who) ? x.who : PEOPLE[0]; map.set(x.id, x); });
+    const added = map.size - entries.length; entries = [...map.values()];
+    if (persist()) toast(`Sauvegarde restaurée (${added} nouvelle${added > 1 ? "s" : ""} entrée${added > 1 ? "s" : ""}).`);
+  } catch (e) { toast("Fichier non reconnu. Choisis une sauvegarde JSON de cette appli."); }
+  ev.target.value = "";
+});
+$("#expPdf").addEventListener("click", () => {
+  if (!entries.length) { toast("Aucune entrée à exporter."); return; }
+  const list = entries.filter(e => e.who === who).sort((a, b) => a.dt.localeCompare(b.dt));
+  if (!list.length) { toast("Aucune entrée pour " + who + "."); return; }
+  const s = stats(list);
+  const first = list[0].dt.slice(0, 10), last = list[list.length - 1].dt.slice(0, 10);
+  const fr = d => new Date(d).toLocaleDateString("fr-FR");
+  $("#report").innerHTML = `<h1>Suivi des migraines : ${esc(who)}</h1>
+    <p>Période : ${fr(first)} au ${fr(last)}. ${s.n} épisode${s.n > 1 ? "s" : ""}, intensité moyenne ${s.avg.toFixed(1).replace(".", ",")}/10, ${s.treated} épisode${s.treated > 1 ? "s" : ""} avec traitement${s.avgP ? ", pression moyenne lors des crises " + Math.round(s.avgP) + " hPa" : ""}.</p>
+    <table><thead><tr><th>Date</th><th>Int.</th><th>Durée</th><th>Traitements</th><th>Alcool</th><th>Fatigue</th><th>Stress</th><th>Pression</th><th>Lune</th><th>Symptômes et notes</th></tr></thead><tbody>` +
+    list.map(e => `<tr><td>${esc(fmtDate(e.dt))}${e.end ? "<br>Fin : " + esc(fmtDate(e.end)) : ""}</td><td>${e.intensity}</td><td>${e.dur != null ? String(e.dur).replace(".", ",") + " h" : ""}</td>
+      <td>${esc([...e.treat, e.treatOther].filter(Boolean).join(", "))}</td>
+      <td>${alcTotal(e) ? esc(e.alc.map(a => a.qty + " " + a.type.toLowerCase()).join(", ")) : ""}</td>
+      <td>${e.fat == null ? "" : LEVELS[e.fat]}</td><td>${e.str == null ? "" : LEVELS[e.str]}</td>
+      <td>${e.pressure ? e.pressure.hpa + " hPa" + (e.pressure.delta3 != null ? " (" + sign(e.pressure.delta3) + ")" : "") : ""}</td>
+      <td>${esc(e.moon.name)}</td><td>${esc([e.sym.join(", "), e.notes].filter(Boolean).join(". "))}</td></tr>`).join("") +
+    `</tbody></table><p style="margin-top:8pt;font-size:8pt">Pression au niveau de la mer (source Open-Meteo). Variation entre parenthèses : évolution sur les 3 h précédentes.</p>`;
+  setTimeout(() => window.print(), 100);
+});
+
+/* ---------- Onglets ---------- */
+function showTab(name) {
+  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name));
+  for (const t of ["new", "log", "exp"]) $("#tab-" + t).hidden = t !== name;
+  if (name === "log") renderList();
+}
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* ---------- Démarrage ---------- */
+buildStatic(); draft = newDraft(); paintForm(); paintWho();
+</script>
+</body>
+</html>
